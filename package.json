@@ -20,8 +20,5 @@
   "bugs": {
     "url": "https://github.com/caglartufan/quizlet/issues"
   },
-  "homepage": "https://github.com/caglartufan/quizlet#readme",
-  "devDependencies": {
-    "@types/http-errors": "^2.0.4"
-  }
+  "homepage": "https://github.com/caglartufan/quizlet#readme"
 }
