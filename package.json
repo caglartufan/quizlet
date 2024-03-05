@@ -1,0 +1,24 @@
+{
+  "name": "quizlet",
+  "version": "1.0.0",
+  "description": "Quizlet is a hobby projects where clients can prepare multiple choice quizzes, share their quizzes with other users, overview their quiz applic ants and their results.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/caglartufan/quizlet.git"
+  },
+  "keywords": [
+    "quiz",
+    "online",
+    "administration"
+  ],
+  "author": "caglartufan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/caglartufan/quizlet/issues"
+  },
+  "homepage": "https://github.com/caglartufan/quizlet#readme"
+}
