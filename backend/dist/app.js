@@ -48,13 +48,23 @@ app.use(express_1.default.urlencoded({ extended: false }));
 // Routes
 app.use('/api/auth', auth_1.default);
 app.use('/api/users', users_1.default);
-// Error handling
+// Error handling middleware
 app.use((err, req, res, next) => {
-    // TODO: Implement a better error handling mechanism
-    return res.status(500).json({
+    res.status(err.statusCode).json({
+        ok: false,
         message: err.message,
+        errors: 'errors' in err ? err.errors : undefined,
     });
 });
+// Not Found Handler
+// app.use((req: Request, res: Response, next: NextFunction) => {
+//     const err = new Error('Not Found');
+//     err.name = 'NotFoundError';
+//     res.status(404).json({
+//         ok: false,
+//         message: 'Endpoint not found',
+//     });
+// });
 // Listen through provided port for HTTP server
 const httpPort = process.env.HTTP_PORT ?? 3000;
 http_1.default.createServer(app).listen(3000, () => {

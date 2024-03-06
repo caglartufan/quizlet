@@ -1,11 +1,15 @@
 import Joi, { ValidationError } from 'joi';
 
-type TransformedError = {
+export type TransformedError = {
     [field: string]: string;
 };
 
+export type ValidationMethod = (body: object) => TransformedError;
+
 export default class RequestBodyValidator {
-    static validateSignUpRequestBody(body: object) {
+    static readonly validateSignUpRequestBody: ValidationMethod = (
+        body: object
+    ) => {
         const schema = Joi.object({
             firstname: Joi.string().required().max(50),
             lastname: Joi.string().required().max(50),
@@ -17,13 +21,14 @@ export default class RequestBodyValidator {
 
         const { error } = schema.validate(body, { abortEarly: false });
 
+        // TODO: This transformation can be handled by a decorator function such as @TransformError
         return this.transformError(error);
-    }
+    };
 
     private static transformError(error: ValidationError | undefined) {
         const transformedError: TransformedError = {};
 
-        if(typeof error === 'undefined') {
+        if (typeof error === 'undefined') {
             return transformedError;
         }
 

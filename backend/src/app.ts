@@ -10,6 +10,7 @@ import config from 'config';
 import mongoose from 'mongoose';
 import debugFn from 'debug';
 const debug = debugFn('quizlet-backend:app');
+import { HTTPError } from './utils/ErrorHandler';
 
 // REST API Routes
 import authRoute from './routes/api/auth';
@@ -63,13 +64,24 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/api/auth', authRoute);
 app.use('/api/users', usersRoute);
 
-// Error handling
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    // TODO: Implement a better error handling mechanism
-    return res.status(500).json({
+// Error handling middleware
+app.use((err: HTTPError, req: Request, res: Response, next: NextFunction) => {
+    res.status(err.statusCode).json({
+        ok: false,
         message: err.message,
+        errors: 'errors' in err ? err.errors : undefined,
     });
 });
+
+// Not Found Handler
+// app.use((req: Request, res: Response, next: NextFunction) => {
+//     const err = new Error('Not Found');
+//     err.name = 'NotFoundError';
+//     res.status(404).json({
+//         ok: false,
+//         message: 'Endpoint not found',
+//     });
+// });
 
 // Listen through provided port for HTTP server
 const httpPort = process.env.HTTP_PORT ?? 3000;
