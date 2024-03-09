@@ -1,4 +1,6 @@
-export default class UserDTO {
+import { IUser } from '../models/User';
+
+export default class UserDTO implements IUser {
     private _firstname: string;
     private _lastname: string;
     private readonly _username: string;

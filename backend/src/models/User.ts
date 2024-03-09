@@ -1,9 +1,19 @@
 import { Schema, model } from 'mongoose';
 import Joi from 'joi';
-import UserDTO from '../DTO/UserDTO';
 import FIELDS from '../messages/fields';
 
-const userSchema = new Schema<UserDTO>(
+export interface IUser {
+    firstname: string;
+    lastname: string;
+    username: string;
+    email: string;
+    password: string;
+    activeToken?: string;
+    countryCode?: string;
+    avatar?: string;
+}
+
+const userSchema = new Schema<IUser>(
     {
         firstname: {
             type: String,
@@ -71,4 +81,4 @@ const userSchema = new Schema<UserDTO>(
     }
 );
 
-export const User = model<UserDTO>('User', userSchema);
+export const User = model<IUser>('User', userSchema);
