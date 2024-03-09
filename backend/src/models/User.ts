@@ -1,57 +1,54 @@
 import { Schema, model } from 'mongoose';
 import Joi from 'joi';
+import UserDTO from '../DTO/UserDTO';
+import FIELDS from '../messages/fields';
 
-interface IUser {
-    firstname: string;
-    lastname: string;
-    username: string;
-    email: string;
-    password: string;
-    activeToken?: string;
-    countryCode?: string;
-    avatar?: string;
-}
-
-// TODO: Add validation messages
-const userSchema = new Schema<IUser>(
+const userSchema = new Schema<UserDTO>(
     {
         firstname: {
             type: String,
-            maxlength: 50,
-            required: true,
+            required: [true, FIELDS.firstname['any.required']],
+            maxlength: [50, FIELDS.firstname['string.max']],
         },
         lastname: {
             type: String,
-            maxlength: 50,
-            required: true,
+            required: [true, FIELDS.lastname['any.required']],
+            maxlength: [50, FIELDS.lastname['string.max']],
         },
         username: {
             type: String,
-            minlength: 3,
-            maxlength: 20,
-            match: /[a-zA-Z0-9]{3,20}/,
             unique: true,
-            required: true,
             immutable: true,
+            required: [true, FIELDS.username['any.required']],
+            minlength: [3, FIELDS.username['string.min']],
+            maxlength: [20, FIELDS.username['string.max']],
+            validate: {
+                validator: function (value: string) {
+                    const { error } = Joi.string().alphanum().validate(value);
+
+                    return typeof error === 'undefined';
+                },
+                message: FIELDS.username['string.alphanum'],
+            },
         },
         email: {
             type: String,
+            unique: true,
+            required: [true, FIELDS.email['any.required']],
             validate: {
-                validator: function(value: string) {
+                validator: function (value: string) {
                     const { error } = Joi.string().email().validate(value);
 
                     return typeof error === 'undefined';
                 },
-                message: 'E-mail address is not valid.'
+                message: FIELDS.email['string.email'],
             },
-            unique: true,
-            required: true,
         },
         password: {
             type: String,
-            minlength: 5,
-            maxlength: 1024,
-            required: true,
+            required: [true, FIELDS.password['any.required']],
+            minlength: [5, FIELDS.password['string.min']],
+            maxlength: [1024, FIELDS.password['string.max']],
         },
         activeToken: {
             type: String,
@@ -62,7 +59,7 @@ const userSchema = new Schema<IUser>(
                 validator: function (value: string) {
                     return value.length === 2;
                 },
-                message: 'Country is not valid.',
+                message: FIELDS.countryCode['string.pattern.base'],
             },
         },
         avatar: {
@@ -74,4 +71,4 @@ const userSchema = new Schema<IUser>(
     }
 );
 
-export const User = model<IUser>('User', userSchema);
+export const User = model<UserDTO>('User', userSchema);

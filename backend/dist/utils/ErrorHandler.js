@@ -1,6 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.InternalServerError = exports.BadRequestError = exports.HTTPError = void 0;
+const errors_1 = __importDefault(require("../messages/errors"));
 class HTTPError extends Error {
     statusCode;
     constructor(statusCode, message) {
@@ -21,7 +25,11 @@ class BadRequestError extends HTTPError {
 exports.BadRequestError = BadRequestError;
 class InternalServerError extends HTTPError {
     constructor(message) {
-        super(500, 'An unexpected error occured! ' + message);
+        let newMessage = errors_1.default.anUnexpectedErrorOccured;
+        if (message) {
+            newMessage += ' ' + message;
+        }
+        super(500, newMessage);
         this.name = 'InternalServerError';
     }
 }

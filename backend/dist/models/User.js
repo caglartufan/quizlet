@@ -6,44 +6,50 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const mongoose_1 = require("mongoose");
 const joi_1 = __importDefault(require("joi"));
-// TODO: Add validation messages
+const fields_1 = __importDefault(require("../messages/fields"));
 const userSchema = new mongoose_1.Schema({
     firstname: {
         type: String,
-        maxlength: 50,
-        required: true,
+        required: [true, fields_1.default.firstname['any.required']],
+        maxlength: [50, fields_1.default.firstname['string.max']],
     },
     lastname: {
         type: String,
-        maxlength: 50,
-        required: true,
+        required: [true, fields_1.default.lastname['any.required']],
+        maxlength: [50, fields_1.default.lastname['string.max']],
     },
     username: {
         type: String,
-        minlength: 3,
-        maxlength: 20,
-        match: /[a-zA-Z0-9]{3,20}/,
         unique: true,
-        required: true,
         immutable: true,
+        required: [true, fields_1.default.username['any.required']],
+        minlength: [3, fields_1.default.username['string.min']],
+        maxlength: [20, fields_1.default.username['string.max']],
+        validate: {
+            validator: function (value) {
+                const { error } = joi_1.default.string().alphanum().validate(value);
+                return typeof error === 'undefined';
+            },
+            message: fields_1.default.username['string.alphanum'],
+        },
     },
     email: {
         type: String,
+        unique: true,
+        required: [true, fields_1.default.email['any.required']],
         validate: {
             validator: function (value) {
                 const { error } = joi_1.default.string().email().validate(value);
                 return typeof error === 'undefined';
             },
-            message: 'E-mail address is not valid.'
+            message: fields_1.default.email['string.email'],
         },
-        unique: true,
-        required: true,
     },
     password: {
         type: String,
-        minlength: 5,
-        maxlength: 1024,
-        required: true,
+        required: [true, fields_1.default.password['any.required']],
+        minlength: [5, fields_1.default.password['string.min']],
+        maxlength: [1024, fields_1.default.password['string.max']],
     },
     activeToken: {
         type: String,
@@ -54,7 +60,7 @@ const userSchema = new mongoose_1.Schema({
             validator: function (value) {
                 return value.length === 2;
             },
-            message: 'Country is not valid.',
+            message: fields_1.default.countryCode['string.pattern.base'],
         },
     },
     avatar: {

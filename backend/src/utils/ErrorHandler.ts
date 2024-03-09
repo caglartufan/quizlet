@@ -1,3 +1,5 @@
+import ERRORS from "../messages/errors";
+
 export class HTTPError extends Error {
     public statusCode: number;
 
@@ -21,15 +23,19 @@ export class BadRequestError<T> extends HTTPError {
 }
 
 export class InternalServerError extends HTTPError {
-    constructor(message: string) {
-        super(500, 'An unexpected error occured! ' + message);
+    constructor(message?: string) {
+        let newMessage = ERRORS.anUnexpectedErrorOccured;
+        if(message) {
+            newMessage += ' ' + message;
+        }
+        super(500, newMessage);
 
         this.name = 'InternalServerError';
     }
 }
 
 export default class ErrorHandler {
-    static handle(error: Error) {
+    static handle(error: any) {
         if (error instanceof HTTPError) {
             return error;
         } else {

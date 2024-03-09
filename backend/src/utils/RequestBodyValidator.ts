@@ -1,4 +1,5 @@
 import Joi, { ValidationError } from 'joi';
+import FIELDS from '../messages/fields';
 
 export type TransformedError = {
     [field: string]: string;
@@ -11,15 +12,29 @@ export default class RequestBodyValidator {
         body: object
     ) => {
         const schema = Joi.object({
-            firstname: Joi.string().required().max(50),
-            lastname: Joi.string().required().max(50),
-            username: Joi.string().required().min(3).max(20).alphanum(),
-            email: Joi.string().required().email(),
-            password: Joi.string().min(5).max(100),
-            passwordConfirm: Joi.any().equal(Joi.ref('password')).required(),
+            firstname: Joi.string()
+                .required()
+                .max(50)
+                .messages(FIELDS.firstname),
+            lastname: Joi.string().required().max(50).messages(FIELDS.lastname),
+            username: Joi.string()
+                .required()
+                .min(3)
+                .max(20)
+                .alphanum()
+                .messages(FIELDS.username),
+            email: Joi.string().required().email().messages(FIELDS.email),
+            password: Joi.string().min(5).max(100).messages(FIELDS.password),
+            passwordConfirm: Joi.any()
+                .required()
+                .equal(Joi.ref('password'))
+                .messages(FIELDS.passwordConfirmation),
         });
 
-        const { error } = schema.validate(body, { abortEarly: false });
+        const { error } = schema.validate(body, {
+            abortEarly: false,
+            stripUnknown: true,
+        });
 
         // TODO: This transformation can be handled by a decorator function such as @TransformError
         return this.transformError(error);

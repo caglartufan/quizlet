@@ -11,6 +11,7 @@ import mongoose from 'mongoose';
 import debugFn from 'debug';
 const debug = debugFn('quizlet-backend:app');
 import { HTTPError } from './utils/ErrorHandler';
+import ServiceRegistry from './services/ServiceRegistry';
 
 // REST API Routes
 import authRoute from './routes/api/auth';
@@ -59,6 +60,9 @@ const app = express();
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Set ServiceRegistry as an application-wide variable
+app.set('services', ServiceRegistry.getInstance());
 
 // Routes
 app.use('/api/auth', authRoute);

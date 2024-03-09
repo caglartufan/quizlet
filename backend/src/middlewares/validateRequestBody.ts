@@ -4,6 +4,7 @@ import RequestBodyValidator, {
     ValidationMethod,
 } from '../utils/RequestBodyValidator';
 import { BadRequestError } from '../utils/ErrorHandler';
+import ERRORS from '../messages/errors';
 
 const requestBodyValidationMiddlewareFactoryFn = (
     validationMethod: ValidationMethod,
@@ -13,10 +14,10 @@ const requestBodyValidationMiddlewareFactoryFn = (
         const validationErrors = validationMethod(req.body);
 
         if (Object.keys(validationErrors).length > 0) {
-            // TODO: Replace hardcoded message with appropriate message from messages folder
             return next(
                 new BadRequestError<TransformedError>(
-                    customValidationErrorMessage ?? 'Validation failed!',
+                    customValidationErrorMessage ??
+                        ERRORS.requestBodyValidationFailed,
                     validationErrors
                 )
             );
@@ -31,5 +32,5 @@ const requestBodyValidationMiddlewareFactoryFn = (
 export const validateSignUpRequestBodyMiddleware =
     requestBodyValidationMiddlewareFactoryFn(
         RequestBodyValidator.validateSignUpRequestBody,
-        'Invalid user input, please try again.'
+        ERRORS.invalidUserInputPleaseTryAgain
     );

@@ -14,6 +14,7 @@ const config_1 = __importDefault(require("config"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const debug_1 = __importDefault(require("debug"));
 const debug = (0, debug_1.default)('quizlet-backend:app');
+const ServiceRegistry_1 = __importDefault(require("./services/ServiceRegistry"));
 // REST API Routes
 const auth_1 = __importDefault(require("./routes/api/auth"));
 const users_1 = __importDefault(require("./routes/api/users"));
@@ -45,6 +46,8 @@ const app = (0, express_1.default)();
 app.use((0, morgan_1.default)('dev'));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
+// Set ServiceRegistry as an application-wide variable
+app.set('services', ServiceRegistry_1.default.getInstance());
 // Routes
 app.use('/api/auth', auth_1.default);
 app.use('/api/users', users_1.default);
