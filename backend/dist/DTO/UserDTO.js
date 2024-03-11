@@ -9,6 +9,9 @@ class UserDTO {
     _activeToken;
     _countryCode;
     _avatar;
+    static withUserDocument(user) {
+        return new UserDTO(user.firstname, user.lastname, user.username, user.email, user.password, user.activeToken, user.countryCode, user.avatar);
+    }
     get firstname() {
         return this._firstname;
     }
@@ -63,6 +66,18 @@ class UserDTO {
         this._activeToken = activeToken;
         this._countryCode = countryCode;
         this._avatar = avatar;
+    }
+    toObject() {
+        return {
+            firstname: this.firstname,
+            lastname: this.lastname,
+            username: this.username,
+            email: this.email,
+            password: this.password,
+            activeToken: this.activeToken,
+            countryCode: this.countryCode,
+            avatar: this.avatar
+        };
     }
 }
 exports.default = UserDTO;

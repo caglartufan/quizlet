@@ -16,7 +16,7 @@ export const signUp: RequestHandler<
 > = async (req, res, next) => {
     const services = req.app.get('services') as ServiceRegistry;
 
-    const userDTO = new UserDTO(
+    let userDTO = new UserDTO(
         req.body.firstname,
         req.body.lastname,
         req.body.username,
@@ -27,10 +27,17 @@ export const signUp: RequestHandler<
     try {
         const user = await services.userService.signUpUser(userDTO);
 
-        res.json({
-            body: req.body,
-            user: user,
-        });
+        const token = await user.generateAuthToken();
+
+        userDTO = UserDTO.withUserDocument(user);
+
+        return res
+            .status(201)
+            .header('Authorization', 'Bearer ' + token)
+            .json({
+                ok: true,
+                user: userDTO.toObject(),
+            });
     } catch (err) {
         next(ErrorHandler.handle(err));
     }

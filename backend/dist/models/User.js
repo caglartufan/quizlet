@@ -6,6 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const mongoose_1 = require("mongoose");
 const joi_1 = __importDefault(require("joi"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
+const config_1 = __importDefault(require("config"));
 const fields_1 = __importDefault(require("../messages/fields"));
 const userSchema = new mongoose_1.Schema({
     firstname: {
@@ -68,5 +71,24 @@ const userSchema = new mongoose_1.Schema({
     },
 }, {
     timestamps: true,
+});
+userSchema.pre('save', async function (next) {
+    if (!this.isModified('password')) {
+        return next();
+    }
+    const salt = await bcrypt_1.default.genSalt(10);
+    const hashedPassword = await bcrypt_1.default.hash(this.password, salt);
+    this.password = hashedPassword;
+    return next();
+});
+userSchema.method('generateAuthToken', async function generateAuthToken() {
+    const token = jsonwebtoken_1.default.sign({
+        username: this.username,
+    }, config_1.default.get('jwt.privateKey'), {
+        expiresIn: '1h',
+    });
+    this.activeToken = token;
+    await this.save();
+    return token;
 });
 exports.User = (0, mongoose_1.model)('User', userSchema);

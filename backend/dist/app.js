@@ -27,7 +27,7 @@ if (process.env.NODE_ENV === 'production' && !config_1.default.get('mongoDB.pass
     debug('FATAL ERROR: MongoDB password config is not set! Terminating process...');
     process.exit(1);
 }
-if (process.env.NODE_ENV === 'production' && !config_1.default.get('jwt.privateKey')) {
+if (!config_1.default.get('jwt.privateKey')) {
     debug('FATAL ERROR: JWT private key config is not set! Terminating process...');
     process.exit(1);
 }

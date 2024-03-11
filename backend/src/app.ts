@@ -18,21 +18,21 @@ import authRoute from './routes/api/auth';
 import usersRoute from './routes/api/users';
 
 // Check if the required configs to boot up are set
-if (!config.get('mongoDB.connectionString')) {
+if (!config.get<string>('mongoDB.connectionString')) {
     debug(
         'FATAL ERROR: MongoDB connection string config is not set! Terminating process...'
     );
     process.exit(1);
 }
 
-if (process.env.NODE_ENV === 'production' && !config.get('mongoDB.password')) {
+if (process.env.NODE_ENV === 'production' && !config.get<string>('mongoDB.password')) {
     debug(
         'FATAL ERROR: MongoDB password config is not set! Terminating process...'
     );
     process.exit(1);
 }
 
-if (process.env.NODE_ENV === 'production' && !config.get('jwt.privateKey')) {
+if (!config.get<string>('jwt.privateKey')) {
     debug(
         'FATAL ERROR: JWT private key config is not set! Terminating process...'
     );
@@ -40,8 +40,8 @@ if (process.env.NODE_ENV === 'production' && !config.get('jwt.privateKey')) {
 }
 
 // Connect to MongoDB
-let connectionString: string = config.get('mongoDB.connectionString');
-const connectionPassword: string = config.get('mongoDB.password');
+let connectionString: string = config.get<string>('mongoDB.connectionString');
+const connectionPassword: string = config.get<string>('mongoDB.password');
 if (connectionPassword) {
     connectionString = connectionString.replace(
         '<password>',

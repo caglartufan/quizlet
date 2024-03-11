@@ -1,5 +1,8 @@
-import { Schema, model } from 'mongoose';
+import { Model, Schema, model } from 'mongoose';
 import Joi from 'joi';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+import config from 'config';
 import FIELDS from '../messages/fields';
 
 export interface IUser {
@@ -13,7 +16,13 @@ export interface IUser {
     avatar?: string;
 }
 
-const userSchema = new Schema<IUser>(
+interface IUserMethods {
+    generateAuthToken(): Promise<string>;
+}
+
+type UserModel = Model<IUser, {}, IUserMethods>;
+
+const userSchema = new Schema<IUser, UserModel, IUserMethods>(
     {
         firstname: {
             type: String,
@@ -81,4 +90,35 @@ const userSchema = new Schema<IUser>(
     }
 );
 
-export const User = model<IUser>('User', userSchema);
+userSchema.pre('save', async function(next) {
+    if(!this.isModified('password')) {
+        return next();
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(this.password, salt);
+
+    this.password = hashedPassword;
+
+    return next();
+});
+
+userSchema.method('generateAuthToken', async function generateAuthToken() {
+    const token: string = jwt.sign(
+        {
+            username: this.username,
+        },
+        config.get<string>('jwt.privateKey'),
+        {
+            expiresIn: '1h',
+        }
+    );
+
+    this.activeToken = token;
+
+    await this.save();
+
+    return token;
+});
+
+export const User = model<IUser, UserModel>('User', userSchema);

@@ -10,6 +10,19 @@ export default class UserDTO implements IUser {
     private _countryCode?: string;
     private _avatar?: string;
 
+    static withUserDocument(user: IUser) {
+        return new UserDTO(
+            user.firstname,
+            user.lastname,
+            user.username,
+            user.email,
+            user.password,
+            user.activeToken,
+            user.countryCode,
+            user.avatar
+        );
+    }
+
     get firstname() {
         return this._firstname;
     }
@@ -88,5 +101,18 @@ export default class UserDTO implements IUser {
         this._activeToken = activeToken;
         this._countryCode = countryCode;
         this._avatar = avatar;
+    }
+
+    toObject() {
+        return {
+            firstname: this.firstname,
+            lastname: this.lastname,
+            username: this.username,
+            email: this.email,
+            password: this.password,
+            activeToken: this.activeToken,
+            countryCode: this.countryCode,
+            avatar: this.avatar
+        };
     }
 }

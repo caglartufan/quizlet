@@ -8,12 +8,17 @@ const UserDTO_1 = __importDefault(require("../../DTO/UserDTO"));
 const ErrorHandler_1 = __importDefault(require("../../utils/ErrorHandler"));
 const signUp = async (req, res, next) => {
     const services = req.app.get('services');
-    const userDTO = new UserDTO_1.default(req.body.firstname, req.body.lastname, req.body.username, req.body.email, req.body.password);
+    let userDTO = new UserDTO_1.default(req.body.firstname, req.body.lastname, req.body.username, req.body.email, req.body.password);
     try {
         const user = await services.userService.signUpUser(userDTO);
-        res.json({
-            body: req.body,
-            user: user,
+        const token = await user.generateAuthToken();
+        userDTO = UserDTO_1.default.withUserDocument(user);
+        return res
+            .status(201)
+            .header('Authorization', 'Bearer ' + token)
+            .json({
+            ok: true,
+            user: userDTO.toObject(),
         });
     }
     catch (err) {

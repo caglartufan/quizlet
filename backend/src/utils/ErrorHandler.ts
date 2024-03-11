@@ -55,7 +55,7 @@ export default class ErrorHandler {
             return new InternalServerError(error.message);
         }
 
-        const dbName = config.get('mongoDB.dbName');
+        const dbName = config.get<string>('mongoDB.dbName');
         const collectionRegExp = new RegExp(`${dbName}\\.(\\w+)`);
         const collectionMatch = collectionRegExp.exec(error.message);
         const fieldAndValueMatch = /{ (.+): "(.*)" }/.exec(error.message);

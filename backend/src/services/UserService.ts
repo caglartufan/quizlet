@@ -1,5 +1,9 @@
+import UserDAO from '../DAO/UserDAO';
 import UserDTO from '../DTO/UserDTO';
-import { User } from '../models/User';
+import ERRORS from '../messages/errors';
+import FIELDS from '../messages/fields';
+import { TransformedError } from '../utils/RequestBodyValidator';
+import { BadRequestError } from '../utils/ErrorHandler';
 
 export default class UserService {
     private static instance: UserService;
@@ -13,14 +17,27 @@ export default class UserService {
     }
 
     async signUpUser(userDTO: UserDTO) {
-        const user = new User({
-            firstname: userDTO.firstname,
-            lastname: userDTO.lastname,
-            username: userDTO.username,
-            email: userDTO.email,
-            password: userDTO.password
-        });
-        await user.save();
+        // Check if the given username or email is already in use and throw appropriate BadRequestError
+        // with generated errors if there's a duplicate value
+        const transformedError: TransformedError = {};
+        const alreadyExistingUsersWithGivenUsernameOrEmail = await UserDAO.findUsersWithGivenUsernameOrEmail(userDTO.username, userDTO.email);
+
+        if(alreadyExistingUsersWithGivenUsernameOrEmail.length > 0) {
+            for(const alreadyExistingUser of alreadyExistingUsersWithGivenUsernameOrEmail) {
+                if(alreadyExistingUser.username === userDTO.username) {
+                    transformedError['username'] = FIELDS.username['unique'];
+                }
+                if(alreadyExistingUser.email === userDTO.email) {
+                    transformedError['email'] = FIELDS.email['unique'];
+                }
+            }
+        }
+
+        if(Object.keys(transformedError).length > 0) {
+            throw new BadRequestError(ERRORS.invalidUserInputPleaseTryAgain, transformedError);
+        }
+
+        const user = await UserDAO.createUser(userDTO);
 
         return user;
     }
