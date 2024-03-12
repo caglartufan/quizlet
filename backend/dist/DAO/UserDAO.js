@@ -3,10 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const User_1 = require("../models/User");
 class UserDAO {
     static async findUserWithGivenEmail(email, projection) {
-        projection = projection ?? {
-            _id: 0,
-            email: 1,
-        };
         const userWithGivenEmail = await User_1.User.findOne({
             email,
         }, projection);

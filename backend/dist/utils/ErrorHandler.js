@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.InternalServerError = exports.BadRequestError = exports.HTTPError = void 0;
+exports.InternalServerError = exports.AuthenticationFailedError = exports.BadRequestError = exports.HTTPError = void 0;
 const mongodb_1 = require("mongodb");
 const config_1 = __importDefault(require("config"));
 const User_1 = require("../models/User");
@@ -27,6 +27,13 @@ class BadRequestError extends HTTPError {
     }
 }
 exports.BadRequestError = BadRequestError;
+class AuthenticationFailedError extends BadRequestError {
+    constructor() {
+        super(errors_1.default.authenticationFailedInvalidEmailOrPassword);
+        this.name = 'AuthenticationFailedError';
+    }
+}
+exports.AuthenticationFailedError = AuthenticationFailedError;
 class InternalServerError extends HTTPError {
     constructor(message) {
         let newMessage = errors_1.default.anUnexpectedErrorOccured;

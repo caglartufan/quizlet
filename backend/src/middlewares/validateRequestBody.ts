@@ -34,3 +34,9 @@ export const validateSignUpRequestBodyMiddleware =
         RequestBodyValidator.validateSignUpRequestBody,
         ERRORS.invalidUserInputPleaseTryAgain
     );
+
+export const validateSignInRequestBodyMiddleware =
+    requestBodyValidationMiddlewareFactoryFn(
+        RequestBodyValidator.validateSignInRequestBody,
+        ERRORS.invalidUserInputPleaseTryAgain
+    );

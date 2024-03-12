@@ -7,6 +7,7 @@ exports.default = {
         password: ''
     },
     jwt: {
-        privateKey: ''
+        privateKey: '',
+        expirationDuration: '1h'
     }
 };

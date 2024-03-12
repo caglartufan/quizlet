@@ -1,15 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class UserDTO {
+    _email;
     _firstname;
     _lastname;
-    _email;
     _password;
     _activeToken;
     _countryCode;
     _avatar;
-    static withUserDocument(user) {
-        return new UserDTO(user.firstname, user.lastname, user.email, user.password, user.activeToken, user.countryCode, user.avatar);
+    get email() {
+        return this._email;
+    }
+    set email(value) {
+        this._email = value;
     }
     get firstname() {
         return this._firstname;
@@ -22,12 +25,6 @@ class UserDTO {
     }
     set lastname(value) {
         this._lastname = value;
-    }
-    get email() {
-        return this._email;
-    }
-    set email(value) {
-        this._email = value;
     }
     get password() {
         return this._password;
@@ -53,20 +50,20 @@ class UserDTO {
     set avatar(value) {
         this._avatar = value;
     }
-    constructor(firstname, lastname, email, password, activeToken, countryCode, avatar) {
-        this._firstname = firstname;
-        this._lastname = lastname;
-        this._email = email;
-        this._password = password;
-        this._activeToken = activeToken;
-        this._countryCode = countryCode;
-        this._avatar = avatar;
+    constructor(obj) {
+        this._email = obj.email;
+        this._firstname = obj.firstname;
+        this._lastname = obj.lastname;
+        this._password = obj.password;
+        this._activeToken = obj.activeToken;
+        this._countryCode = obj.countryCode;
+        this._avatar = obj.avatar;
     }
     toObject() {
         return {
+            email: this.email,
             firstname: this.firstname,
             lastname: this.lastname,
-            email: this.email,
             password: this.password,
             activeToken: this.activeToken,
             countryCode: this.countryCode,

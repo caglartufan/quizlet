@@ -16,7 +16,8 @@ export interface IUser {
 }
 
 interface IUserMethods {
-    generateAuthToken(): Promise<string>;
+    checkPassword(password: string): Promise<boolean>;
+    getActiveAuthTokenOrGenerateOne(): Promise<string>;
 }
 
 type UserModel = Model<IUser, {}, IUserMethods>;
@@ -73,8 +74,8 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
     }
 );
 
-userSchema.pre('save', async function(next) {
-    if(!this.isModified('password')) {
+userSchema.pre('save', async function (next) {
+    if (!this.isModified('password')) {
         return next();
     }
 
@@ -86,22 +87,65 @@ userSchema.pre('save', async function(next) {
     return next();
 });
 
-userSchema.method('generateAuthToken', async function generateAuthToken() {
-    const token: string = jwt.sign(
-        {
-            email: this.email,
-        },
-        config.get<string>('jwt.privateKey'),
-        {
-            expiresIn: '1h',
+userSchema.method(
+    'checkPassword',
+    async function checkPassword(password: string) {
+        const isCorrectPassword: boolean = await bcrypt.compare(
+            password,
+            this.password
+        );
+
+        return isCorrectPassword;
+    }
+);
+
+userSchema.method(
+    'getActiveAuthTokenOrGenerateOne',
+    async function getActiveAuthTokenOrGenerateOne() {
+        let token: string | undefined = this.activeToken;
+        const jwtPrivateKey = config.get<string>('jwt.privateKey');
+        const jwtExpirationDuration = config.get<string>('jwt.expirationDuration');
+        const newToken = jwt.sign(
+            {
+                email: this.email,
+            },
+            jwtPrivateKey,
+            {
+                expiresIn: jwtExpirationDuration,
+            }
+        );
+
+        // If there's an active token, verify it. If the token is not valid or happens to be there's an error thrown
+        // while verifying related to jwt's possible verification errors then update the active token
+        // with new token generated above. If the error thrown while verification is not
+        // related to jwt's possible verification errors, then throw it again for error handler to catch it and handle
+        if (token) {
+            try {
+                const payload = jwt.verify(token, jwtPrivateKey);
+
+                if (
+                    typeof payload === 'string' ||
+                    (typeof payload === 'object' && payload?.email !== this.email)
+                ) {
+                    token = newToken;
+                }
+            } catch(err) {
+                if(err instanceof jwt.JsonWebTokenError || err instanceof jwt.NotBeforeError || err instanceof jwt.TokenExpiredError) {
+                    token = newToken;
+                } else {
+                    throw err;
+                }
+            }
+        } else {
+            token = newToken;
         }
-    );
 
-    this.activeToken = token;
+        this.activeToken = token;
 
-    await this.save();
+        await this.save();
 
-    return token;
-});
+        return token;
+    }
+);
 
 export const User = model<IUser, UserModel>('User', userSchema);

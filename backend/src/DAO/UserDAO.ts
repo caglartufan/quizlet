@@ -7,10 +7,6 @@ export default class UserDAO {
         email: string,
         projection?: ProjectionType<IUser>
     ) {
-        projection = projection ?? {
-            _id: 0,
-            email: 1,
-        };
         const userWithGivenEmail = await User.findOne(
             {
                 email,

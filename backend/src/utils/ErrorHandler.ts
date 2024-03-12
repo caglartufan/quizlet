@@ -27,6 +27,14 @@ export class BadRequestError<T> extends HTTPError {
     }
 }
 
+export class AuthenticationFailedError extends BadRequestError<undefined> {
+    constructor() {
+        super(ERRORS.authenticationFailedInvalidEmailOrPassword);
+
+        this.name = 'AuthenticationFailedError';
+    }
+}
+
 export class InternalServerError extends HTTPError {
     constructor(message?: string) {
         let newMessage = ERRORS.anUnexpectedErrorOccured;

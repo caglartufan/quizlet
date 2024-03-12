@@ -19,7 +19,10 @@ class UserService {
         // Check if the given username or email is already in use and throw appropriate BadRequestError
         // with generated errors if there's a duplicate value
         const transformedError = {};
-        const alreadyExistingUserWithGivenEmail = await UserDAO_1.default.findUserWithGivenEmail(userDTO.email);
+        const alreadyExistingUserWithGivenEmail = await UserDAO_1.default.findUserWithGivenEmail(userDTO.email, {
+            _id: 0,
+            email: 1,
+        });
         if (alreadyExistingUserWithGivenEmail?.email === userDTO.email) {
             transformedError['email'] = fields_1.default.email['unique'];
         }
@@ -27,6 +30,18 @@ class UserService {
             throw new ErrorHandler_1.BadRequestError(errors_1.default.invalidUserInputPleaseTryAgain, transformedError);
         }
         const user = await UserDAO_1.default.createUser(userDTO);
+        return user;
+    }
+    async signInUser(userDTO) {
+        const authenticationFailedError = new ErrorHandler_1.AuthenticationFailedError();
+        const user = await UserDAO_1.default.findUserWithGivenEmail(userDTO.email);
+        if (!user || !userDTO.password) {
+            throw authenticationFailedError;
+        }
+        const isCorrectPassword = await user.checkPassword(userDTO.password);
+        if (!isCorrectPassword) {
+            throw authenticationFailedError;
+        }
         return user;
     }
     constructor() { }

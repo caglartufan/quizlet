@@ -5,6 +5,7 @@ export default {
         password: 'i1YLtkJqOn57hXDT'
     },
     jwt: {
-        privateKey: ''
+        privateKey: '',
+        expirationDuration: '1h'
     }
 };

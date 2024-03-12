@@ -66,12 +66,43 @@ userSchema.pre('save', async function (next) {
     this.password = hashedPassword;
     return next();
 });
-userSchema.method('generateAuthToken', async function generateAuthToken() {
-    const token = jsonwebtoken_1.default.sign({
+userSchema.method('checkPassword', async function checkPassword(password) {
+    const isCorrectPassword = await bcrypt_1.default.compare(password, this.password);
+    return isCorrectPassword;
+});
+userSchema.method('getActiveAuthTokenOrGenerateOne', async function getActiveAuthTokenOrGenerateOne() {
+    let token = this.activeToken;
+    const jwtPrivateKey = config_1.default.get('jwt.privateKey');
+    const jwtExpirationDuration = config_1.default.get('jwt.expirationDuration');
+    const newToken = jsonwebtoken_1.default.sign({
         email: this.email,
-    }, config_1.default.get('jwt.privateKey'), {
-        expiresIn: '1h',
+    }, jwtPrivateKey, {
+        expiresIn: jwtExpirationDuration,
     });
+    // If there's an active token, verify it. If the token is not valid or happens to be there's an error thrown
+    // while verifying related to jwt's possible verification errors then update the active token
+    // with new token generated above. If the error thrown while verification is not
+    // related to jwt's possible verification errors, then throw it again for error handler to catch it and handle
+    if (token) {
+        try {
+            const payload = jsonwebtoken_1.default.verify(token, jwtPrivateKey);
+            if (typeof payload === 'string' ||
+                (typeof payload === 'object' && payload?.email !== this.email)) {
+                token = newToken;
+            }
+        }
+        catch (err) {
+            if (err instanceof jsonwebtoken_1.default.JsonWebTokenError || err instanceof jsonwebtoken_1.default.NotBeforeError || err instanceof jsonwebtoken_1.default.TokenExpiredError) {
+                token = newToken;
+            }
+            else {
+                throw err;
+            }
+        }
+    }
+    else {
+        token = newToken;
+    }
     this.activeToken = token;
     await this.save();
     return token;

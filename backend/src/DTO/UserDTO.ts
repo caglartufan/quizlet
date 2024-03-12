@@ -1,41 +1,11 @@
-import { IUser } from '../models/User';
-
-export default class UserDTO implements IUser {
-    private _firstname: string;
-    private _lastname: string;
+export default class UserDTO {
     private _email: string;
-    private _password: string;
+    private _firstname?: string;
+    private _lastname?: string;
+    private _password?: string;
     private _activeToken?: string;
     private _countryCode?: string;
     private _avatar?: string;
-
-    static withUserDocument(user: IUser) {
-        return new UserDTO(
-            user.firstname,
-            user.lastname,
-            user.email,
-            user.password,
-            user.activeToken,
-            user.countryCode,
-            user.avatar
-        );
-    }
-
-    get firstname() {
-        return this._firstname;
-    }
-
-    set firstname(value: string) {
-        this._firstname = value;
-    }
-
-    get lastname() {
-        return this._lastname;
-    }
-
-    set lastname(value: string) {
-        this._lastname = value;
-    }
 
     get email() {
         return this._email;
@@ -45,7 +15,23 @@ export default class UserDTO implements IUser {
         this._email = value;
     }
 
-    get password() {
+    get firstname(): string | undefined {
+        return this._firstname;
+    }
+
+    set firstname(value: string) {
+        this._firstname = value;
+    }
+
+    get lastname(): string | undefined {
+        return this._lastname;
+    }
+
+    set lastname(value: string) {
+        this._lastname = value;
+    }
+
+    get password(): string | undefined {
         return this._password;
     }
 
@@ -78,28 +64,30 @@ export default class UserDTO implements IUser {
     }
 
     constructor(
-        firstname: string,
-        lastname: string,
-        email: string,
-        password: string,
-        activeToken?: string,
-        countryCode?: string,
-        avatar?: string
+        obj: {
+            email: string,
+            firstname?: string,
+            lastname?: string,
+            password?: string,
+            activeToken?: string,
+            countryCode?: string,
+            avatar?: string
+        }
     ) {
-        this._firstname = firstname;
-        this._lastname = lastname;
-        this._email = email;
-        this._password = password;
-        this._activeToken = activeToken;
-        this._countryCode = countryCode;
-        this._avatar = avatar;
+        this._email = obj.email;
+        this._firstname = obj.firstname;
+        this._lastname = obj.lastname;
+        this._password = obj.password;
+        this._activeToken = obj.activeToken;
+        this._countryCode = obj.countryCode;
+        this._avatar = obj.avatar;
     }
 
     toObject() {
         return {
+            email: this.email,
             firstname: this.firstname,
             lastname: this.lastname,
-            email: this.email,
             password: this.password,
             activeToken: this.activeToken,
             countryCode: this.countryCode,

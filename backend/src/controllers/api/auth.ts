@@ -1,4 +1,5 @@
 import { RequestHandler } from 'express';
+import _ from 'lodash';
 import ServiceRegistry from '../../services/ServiceRegistry';
 import UserDTO from '../../DTO/UserDTO';
 import ErrorHandler from '../../utils/ErrorHandler';
@@ -15,32 +16,53 @@ export const signUp: RequestHandler<
 > = async (req, res, next) => {
     const services = req.app.get('services') as ServiceRegistry;
 
-    let userDTO = new UserDTO(
-        req.body.firstname,
-        req.body.lastname,
-        req.body.email,
-        req.body.password
-    );
+    let userDTO = new UserDTO(req.body);
 
     try {
         const user = await services.userService.signUpUser(userDTO);
 
-        const token = await user.generateAuthToken();
+        const token = await user.getActiveAuthTokenOrGenerateOne();
 
-        userDTO = UserDTO.withUserDocument(user);
+        userDTO = new UserDTO(user);
 
         return res
             .status(201)
             .header('Authorization', 'Bearer ' + token)
             .json({
                 ok: true,
-                user: userDTO.toObject(),
+                user: _.omit(userDTO.toObject(), ['_id', 'password', 'activeToken']),
             });
     } catch (err) {
         next(ErrorHandler.handle(err));
     }
 };
 
-export const signIn: RequestHandler = (req, res, next) => {
-    // Will be added
+export const signIn: RequestHandler<
+    {},
+    any,
+    {
+        email: string,
+        password: string
+    }
+> = async (req, res, next) => {
+    const services = req.app.get('services') as ServiceRegistry;
+
+    let userDTO = new UserDTO(req.body);
+
+    try {
+        const user = await services.userService.signInUser(userDTO);
+
+        const token = await user.getActiveAuthTokenOrGenerateOne();
+
+        userDTO = new UserDTO(user);
+
+        return res
+            .header('Authorization', 'Bearer ' + token)
+            .json({
+                ok: true,
+                user: _.omit(userDTO.toObject(), ['_id', 'password', 'activeToken'])
+            });
+    } catch(err) {
+        next(ErrorHandler.handle(err));
+    }
 };
