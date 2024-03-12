@@ -9,7 +9,6 @@ export const signUp: RequestHandler<
     {
         firstname: string;
         lastname: string;
-        username: string;
         email: string;
         password: string;
     }
@@ -19,7 +18,6 @@ export const signUp: RequestHandler<
     let userDTO = new UserDTO(
         req.body.firstname,
         req.body.lastname,
-        req.body.username,
         req.body.email,
         req.body.password
     );

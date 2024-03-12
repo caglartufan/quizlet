@@ -65,10 +65,9 @@ class ErrorHandler {
         const collection = collectionMatch[1];
         const field = fieldAndValueMatch[1];
         const value = fieldAndValueMatch[2];
-        if (collection === User_1.User.collection.name &&
-            (field === 'username' || field === 'email')) {
+        if (collection === User_1.User.collection.name && field === 'email') {
             const transformedError = {
-                [field]: fields_1.default[field]['unique'],
+                email: fields_1.default.email['unique'],
             };
             return new BadRequestError(errors_1.default.invalidUserInputPleaseTryAgain, transformedError);
         }

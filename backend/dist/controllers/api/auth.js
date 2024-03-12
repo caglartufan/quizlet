@@ -8,7 +8,7 @@ const UserDTO_1 = __importDefault(require("../../DTO/UserDTO"));
 const ErrorHandler_1 = __importDefault(require("../../utils/ErrorHandler"));
 const signUp = async (req, res, next) => {
     const services = req.app.get('services');
-    let userDTO = new UserDTO_1.default(req.body.firstname, req.body.lastname, req.body.username, req.body.email, req.body.password);
+    let userDTO = new UserDTO_1.default(req.body.firstname, req.body.lastname, req.body.email, req.body.password);
     try {
         const user = await services.userService.signUpUser(userDTO);
         const token = await user.generateAuthToken();

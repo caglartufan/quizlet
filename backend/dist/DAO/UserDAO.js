@@ -2,32 +2,23 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const User_1 = require("../models/User");
 class UserDAO {
-    static async findUsersWithGivenUsernameOrEmail(username, email, projection) {
+    static async findUserWithGivenEmail(email, projection) {
         projection = projection ?? {
             _id: 0,
-            username: 1,
             email: 1,
         };
-        const usersWithGivenUsernameOrEmail = await User_1.User.find({
-            $or: [
-                {
-                    username,
-                },
-                {
-                    email,
-                },
-            ],
+        const userWithGivenEmail = await User_1.User.findOne({
+            email,
         }, projection);
-        return usersWithGivenUsernameOrEmail;
+        return userWithGivenEmail;
     }
     static async createUser(userDTO) {
         // Create a new user document
         const user = new User_1.User({
             firstname: userDTO.firstname,
             lastname: userDTO.lastname,
-            username: userDTO.username,
             email: userDTO.email,
-            password: userDTO.password
+            password: userDTO.password,
         });
         // Save user to the database
         await user.save();

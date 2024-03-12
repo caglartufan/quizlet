@@ -3,7 +3,6 @@ import { IUser } from '../models/User';
 export default class UserDTO implements IUser {
     private _firstname: string;
     private _lastname: string;
-    private readonly _username: string;
     private _email: string;
     private _password: string;
     private _activeToken?: string;
@@ -14,7 +13,6 @@ export default class UserDTO implements IUser {
         return new UserDTO(
             user.firstname,
             user.lastname,
-            user.username,
             user.email,
             user.password,
             user.activeToken,
@@ -37,10 +35,6 @@ export default class UserDTO implements IUser {
 
     set lastname(value: string) {
         this._lastname = value;
-    }
-
-    get username() {
-        return this._username;
     }
 
     get email() {
@@ -86,7 +80,6 @@ export default class UserDTO implements IUser {
     constructor(
         firstname: string,
         lastname: string,
-        username: string,
         email: string,
         password: string,
         activeToken?: string,
@@ -95,7 +88,6 @@ export default class UserDTO implements IUser {
     ) {
         this._firstname = firstname;
         this._lastname = lastname;
-        this._username = username;
         this._email = email;
         this._password = password;
         this._activeToken = activeToken;
@@ -107,7 +99,6 @@ export default class UserDTO implements IUser {
         return {
             firstname: this.firstname,
             lastname: this.lastname,
-            username: this.username,
             email: this.email,
             password: this.password,
             activeToken: this.activeToken,

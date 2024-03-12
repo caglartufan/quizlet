@@ -21,21 +21,6 @@ const userSchema = new mongoose_1.Schema({
         required: [true, fields_1.default.lastname['any.required']],
         maxlength: [50, fields_1.default.lastname['string.max']],
     },
-    username: {
-        type: String,
-        unique: true,
-        immutable: true,
-        required: [true, fields_1.default.username['any.required']],
-        minlength: [3, fields_1.default.username['string.min']],
-        maxlength: [20, fields_1.default.username['string.max']],
-        validate: {
-            validator: function (value) {
-                const { error } = joi_1.default.string().alphanum().validate(value);
-                return typeof error === 'undefined';
-            },
-            message: fields_1.default.username['string.alphanum'],
-        },
-    },
     email: {
         type: String,
         unique: true,
@@ -83,7 +68,7 @@ userSchema.pre('save', async function (next) {
 });
 userSchema.method('generateAuthToken', async function generateAuthToken() {
     const token = jsonwebtoken_1.default.sign({
-        username: this.username,
+        email: this.email,
     }, config_1.default.get('jwt.privateKey'), {
         expiresIn: '1h',
     });

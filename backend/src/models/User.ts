@@ -8,7 +8,6 @@ import FIELDS from '../messages/fields';
 export interface IUser {
     firstname: string;
     lastname: string;
-    username: string;
     email: string;
     password: string;
     activeToken?: string;
@@ -33,22 +32,6 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
             type: String,
             required: [true, FIELDS.lastname['any.required']],
             maxlength: [50, FIELDS.lastname['string.max']],
-        },
-        username: {
-            type: String,
-            unique: true,
-            immutable: true,
-            required: [true, FIELDS.username['any.required']],
-            minlength: [3, FIELDS.username['string.min']],
-            maxlength: [20, FIELDS.username['string.max']],
-            validate: {
-                validator: function (value: string) {
-                    const { error } = Joi.string().alphanum().validate(value);
-
-                    return typeof error === 'undefined';
-                },
-                message: FIELDS.username['string.alphanum'],
-            },
         },
         email: {
             type: String,
@@ -106,7 +89,7 @@ userSchema.pre('save', async function(next) {
 userSchema.method('generateAuthToken', async function generateAuthToken() {
     const token: string = jwt.sign(
         {
-            username: this.username,
+            email: this.email,
         },
         config.get<string>('jwt.privateKey'),
         {

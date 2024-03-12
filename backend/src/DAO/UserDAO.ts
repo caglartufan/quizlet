@@ -3,31 +3,22 @@ import { IUser, User } from '../models/User';
 import UserDTO from '../DTO/UserDTO';
 
 export default class UserDAO {
-    static async findUsersWithGivenUsernameOrEmail(
-        username: string,
+    static async findUserWithGivenEmail(
         email: string,
         projection?: ProjectionType<IUser>
     ) {
         projection = projection ?? {
             _id: 0,
-            username: 1,
             email: 1,
         };
-        const usersWithGivenUsernameOrEmail = await User.find(
+        const userWithGivenEmail = await User.findOne(
             {
-                $or: [
-                    {
-                        username,
-                    },
-                    {
-                        email,
-                    },
-                ],
+                email,
             },
             projection
         );
 
-        return usersWithGivenUsernameOrEmail;
+        return userWithGivenEmail;
     }
 
     static async createUser(userDTO: UserDTO) {
@@ -35,9 +26,8 @@ export default class UserDAO {
         const user = new User({
             firstname: userDTO.firstname,
             lastname: userDTO.lastname,
-            username: userDTO.username,
             email: userDTO.email,
-            password: userDTO.password
+            password: userDTO.password,
         });
 
         // Save user to the database

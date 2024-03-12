@@ -51,7 +51,7 @@ export default class ErrorHandler {
     }
 
     private static handleMongoServerError(error: MongoServerError) {
-        if(error.code !== 11000) {
+        if (error.code !== 11000) {
             return new InternalServerError(error.message);
         }
 
@@ -71,12 +71,9 @@ export default class ErrorHandler {
         const field = fieldAndValueMatch[1];
         const value = fieldAndValueMatch[2];
 
-        if (
-            collection === User.collection.name &&
-            (field === 'username' || field === 'email')
-        ) {
+        if (collection === User.collection.name && field === 'email') {
             const transformedError: TransformedError = {
-                [field]: FIELDS[field]['unique'],
+                email: FIELDS.email['unique'],
             };
 
             return new BadRequestError(

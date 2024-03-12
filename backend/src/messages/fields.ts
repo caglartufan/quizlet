@@ -7,15 +7,6 @@ const FIELDS = {
         'any.required': 'Last name was not entered.',
         'string.max': 'Last name can contain maximum of 50 characters.',
     },
-    username: {
-        'any.required': 'User name was not entered.',
-        'string.min':
-            'User name can contain minimum of 3 and maximum of 20 characters.',
-        'string.max':
-            'User name can contain minimum of 3 and maximum of 20 characters.',
-        'string.alphanum': 'User name must be alphanumeric.',
-        'unique': 'User name is already in use.'
-    },
     email: {
         'any.required': 'E-mail address was not entered.',
         'string.email': 'E-mail address is not a valid e-mail address.',

@@ -13,12 +13,6 @@ class RequestBodyValidator {
                 .max(50)
                 .messages(fields_1.default.firstname),
             lastname: joi_1.default.string().required().max(50).messages(fields_1.default.lastname),
-            username: joi_1.default.string()
-                .required()
-                .min(3)
-                .max(20)
-                .alphanum()
-                .messages(fields_1.default.username),
             email: joi_1.default.string().required().email().messages(fields_1.default.email),
             password: joi_1.default.string().min(5).max(100).messages(fields_1.default.password),
             passwordConfirm: joi_1.default.any()

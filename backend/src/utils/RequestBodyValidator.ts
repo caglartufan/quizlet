@@ -17,12 +17,6 @@ export default class RequestBodyValidator {
                 .max(50)
                 .messages(FIELDS.firstname),
             lastname: Joi.string().required().max(50).messages(FIELDS.lastname),
-            username: Joi.string()
-                .required()
-                .min(3)
-                .max(20)
-                .alphanum()
-                .messages(FIELDS.username),
             email: Joi.string().required().email().messages(FIELDS.email),
             password: Joi.string().min(5).max(100).messages(FIELDS.password),
             passwordConfirm: Joi.any()

@@ -20,17 +20,10 @@ export default class UserService {
         // Check if the given username or email is already in use and throw appropriate BadRequestError
         // with generated errors if there's a duplicate value
         const transformedError: TransformedError = {};
-        const alreadyExistingUsersWithGivenUsernameOrEmail = await UserDAO.findUsersWithGivenUsernameOrEmail(userDTO.username, userDTO.email);
+        const alreadyExistingUserWithGivenEmail = await UserDAO.findUserWithGivenEmail(userDTO.email);
 
-        if(alreadyExistingUsersWithGivenUsernameOrEmail.length > 0) {
-            for(const alreadyExistingUser of alreadyExistingUsersWithGivenUsernameOrEmail) {
-                if(alreadyExistingUser.username === userDTO.username) {
-                    transformedError['username'] = FIELDS.username['unique'];
-                }
-                if(alreadyExistingUser.email === userDTO.email) {
-                    transformedError['email'] = FIELDS.email['unique'];
-                }
-            }
+        if(alreadyExistingUserWithGivenEmail?.email === userDTO.email) {
+            transformedError['email'] = FIELDS.email['unique'];
         }
 
         if(Object.keys(transformedError).length > 0) {
