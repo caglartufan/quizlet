@@ -1,7 +1,7 @@
 import UserDAO from '../DAO/UserDAO';
 import UserDTO from '../DTO/UserDTO';
 import ERRORS from '../messages/errors';
-import FIELDS from '../messages/fields';
+import VALIDATION from '../messages/validation';
 import { TransformedError } from '../utils/RequestBodyValidator';
 import {
     AuthenticationFailedError,
@@ -30,7 +30,7 @@ export default class UserService {
             });
 
         if (alreadyExistingUserWithGivenEmail?.email === userDTO.email) {
-            transformedError['email'] = FIELDS.email['unique'];
+            transformedError['email'] = VALIDATION.user.email['unique'];
         }
 
         if (Object.keys(transformedError).length > 0) {

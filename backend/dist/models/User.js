@@ -9,35 +9,35 @@ const joi_1 = __importDefault(require("joi"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const config_1 = __importDefault(require("config"));
-const fields_1 = __importDefault(require("../messages/fields"));
+const validation_1 = __importDefault(require("../messages/validation"));
 const userSchema = new mongoose_1.Schema({
     firstname: {
         type: String,
-        required: [true, fields_1.default.firstname['any.required']],
-        maxlength: [50, fields_1.default.firstname['string.max']],
+        required: [true, validation_1.default.user.firstname['any.required']],
+        maxlength: [50, validation_1.default.user.firstname['string.max']],
     },
     lastname: {
         type: String,
-        required: [true, fields_1.default.lastname['any.required']],
-        maxlength: [50, fields_1.default.lastname['string.max']],
+        required: [true, validation_1.default.user.lastname['any.required']],
+        maxlength: [50, validation_1.default.user.lastname['string.max']],
     },
     email: {
         type: String,
         unique: true,
-        required: [true, fields_1.default.email['any.required']],
+        required: [true, validation_1.default.user.email['any.required']],
         validate: {
             validator: function (value) {
                 const { error } = joi_1.default.string().email().validate(value);
                 return typeof error === 'undefined';
             },
-            message: fields_1.default.email['string.email'],
+            message: validation_1.default.user.email['string.email'],
         },
     },
     password: {
         type: String,
-        required: [true, fields_1.default.password['any.required']],
-        minlength: [5, fields_1.default.password['string.min']],
-        maxlength: [1024, fields_1.default.password['string.max']],
+        required: [true, validation_1.default.user.password['any.required']],
+        minlength: [5, validation_1.default.user.password['string.min']],
+        maxlength: [1024, validation_1.default.user.password['string.max']],
     },
     activeToken: {
         type: String,
@@ -48,7 +48,7 @@ const userSchema = new mongoose_1.Schema({
             validator: function (value) {
                 return value.length === 2;
             },
-            message: fields_1.default.countryCode['string.pattern.base'],
+            message: validation_1.default.user.countryCode['string.pattern.base'],
         },
     },
     avatar: {

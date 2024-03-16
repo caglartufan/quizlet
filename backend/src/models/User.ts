@@ -3,7 +3,7 @@ import Joi from 'joi';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import config from 'config';
-import FIELDS from '../messages/fields';
+import VALIDATION from '../messages/validation';
 
 export interface IUser {
     firstname: string;
@@ -26,32 +26,32 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
     {
         firstname: {
             type: String,
-            required: [true, FIELDS.firstname['any.required']],
-            maxlength: [50, FIELDS.firstname['string.max']],
+            required: [true, VALIDATION.user.firstname['any.required']],
+            maxlength: [50, VALIDATION.user.firstname['string.max']],
         },
         lastname: {
             type: String,
-            required: [true, FIELDS.lastname['any.required']],
-            maxlength: [50, FIELDS.lastname['string.max']],
+            required: [true, VALIDATION.user.lastname['any.required']],
+            maxlength: [50, VALIDATION.user.lastname['string.max']],
         },
         email: {
             type: String,
             unique: true,
-            required: [true, FIELDS.email['any.required']],
+            required: [true, VALIDATION.user.email['any.required']],
             validate: {
                 validator: function (value: string) {
                     const { error } = Joi.string().email().validate(value);
 
                     return typeof error === 'undefined';
                 },
-                message: FIELDS.email['string.email'],
+                message: VALIDATION.user.email['string.email'],
             },
         },
         password: {
             type: String,
-            required: [true, FIELDS.password['any.required']],
-            minlength: [5, FIELDS.password['string.min']],
-            maxlength: [1024, FIELDS.password['string.max']],
+            required: [true, VALIDATION.user.password['any.required']],
+            minlength: [5, VALIDATION.user.password['string.min']],
+            maxlength: [1024, VALIDATION.user.password['string.max']],
         },
         activeToken: {
             type: String,
@@ -62,7 +62,7 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
                 validator: function (value: string) {
                     return value.length === 2;
                 },
-                message: FIELDS.countryCode['string.pattern.base'],
+                message: VALIDATION.user.countryCode['string.pattern.base'],
             },
         },
         avatar: {

@@ -8,7 +8,7 @@ const mongodb_1 = require("mongodb");
 const config_1 = __importDefault(require("config"));
 const User_1 = require("../models/User");
 const errors_1 = __importDefault(require("../messages/errors"));
-const fields_1 = __importDefault(require("../messages/fields"));
+const validation_1 = __importDefault(require("../messages/validation"));
 class HTTPError extends Error {
     statusCode;
     constructor(statusCode, message) {
@@ -74,7 +74,7 @@ class ErrorHandler {
         const value = fieldAndValueMatch[2];
         if (collection === User_1.User.collection.name && field === 'email') {
             const transformedError = {
-                email: fields_1.default.email['unique'],
+                email: validation_1.default.user.email['unique'],
             };
             return new BadRequestError(errors_1.default.invalidUserInputPleaseTryAgain, transformedError);
         }

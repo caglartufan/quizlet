@@ -2,7 +2,7 @@ import { MongoServerError } from 'mongodb';
 import config from 'config';
 import { User } from '../models/User';
 import ERRORS from '../messages/errors';
-import FIELDS from '../messages/fields';
+import VALIDATION from '../messages/validation';
 import { TransformedError } from './RequestBodyValidator';
 
 export class HTTPError extends Error {
@@ -81,7 +81,7 @@ export default class ErrorHandler {
 
         if (collection === User.collection.name && field === 'email') {
             const transformedError: TransformedError = {
-                email: FIELDS.email['unique'],
+                email: VALIDATION.user.email['unique'],
             };
 
             return new BadRequestError(

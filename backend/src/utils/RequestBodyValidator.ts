@@ -1,5 +1,5 @@
 import Joi, { ValidationError } from 'joi';
-import FIELDS from '../messages/fields';
+import VALIDATION from '../messages/validation';
 
 export type TransformedError = {
     [field: string]: string;
@@ -15,14 +15,14 @@ export default class RequestBodyValidator {
             firstname: Joi.string()
                 .required()
                 .max(50)
-                .messages(FIELDS.firstname),
-            lastname: Joi.string().required().max(50).messages(FIELDS.lastname),
-            email: Joi.string().required().email().messages(FIELDS.email),
-            password: Joi.string().required().min(5).max(100).messages(FIELDS.password),
+                .messages(VALIDATION.user.firstname),
+            lastname: Joi.string().required().max(50).messages(VALIDATION.user.lastname),
+            email: Joi.string().required().email().messages(VALIDATION.user.email),
+            password: Joi.string().required().min(5).max(100).messages(VALIDATION.user.password),
             passwordConfirm: Joi.any()
                 .required()
                 .equal(Joi.ref('password'))
-                .messages(FIELDS.passwordConfirmation),
+                .messages(VALIDATION.user.passwordConfirmation),
         });
 
         const { error } = schema.validate(body, {
@@ -38,8 +38,8 @@ export default class RequestBodyValidator {
         body
     ) => {
         const schema = Joi.object({
-            email: Joi.string().required().email().messages(FIELDS.email),
-            password: Joi.string().required().min(5).max(100).messages(FIELDS.password)
+            email: Joi.string().required().email().messages(VALIDATION.user.email),
+            password: Joi.string().required().min(5).max(100).messages(VALIDATION.user.password)
         });
 
         const { error } = schema.validate(body, {

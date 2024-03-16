@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const UserDAO_1 = __importDefault(require("../DAO/UserDAO"));
 const errors_1 = __importDefault(require("../messages/errors"));
-const fields_1 = __importDefault(require("../messages/fields"));
+const validation_1 = __importDefault(require("../messages/validation"));
 const ErrorHandler_1 = require("../utils/ErrorHandler");
 class UserService {
     static instance;
@@ -24,7 +24,7 @@ class UserService {
             email: 1,
         });
         if (alreadyExistingUserWithGivenEmail?.email === userDTO.email) {
-            transformedError['email'] = fields_1.default.email['unique'];
+            transformedError['email'] = validation_1.default.user.email['unique'];
         }
         if (Object.keys(transformedError).length > 0) {
             throw new ErrorHandler_1.BadRequestError(errors_1.default.invalidUserInputPleaseTryAgain, transformedError);
