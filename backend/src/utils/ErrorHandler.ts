@@ -1,5 +1,6 @@
 import { MongoServerError } from 'mongodb';
 import config from 'config';
+import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 import { User } from '../models/User';
 import ERRORS from '../messages/errors';
 import VALIDATION from '../messages/validation';
@@ -13,6 +14,30 @@ export class HTTPError extends Error {
 
         this.name = 'HTTPError';
         this.statusCode = statusCode;
+    }
+}
+
+export class UnauthorizedError extends HTTPError {
+    constructor() {
+        super(401, ERRORS.unauthorizedUser);
+
+        this.name = 'UnauthorizedError';
+    }
+}
+
+export class InvalidJWTError extends HTTPError {
+    constructor() {
+        super(401, ERRORS.invalidJWTProvided);
+
+        this.name = 'InvalidJWTError';
+    }
+}
+
+export class ExpiredJWTError extends HTTPError {
+    constructor() {
+        super(401, ERRORS.expiredJWTProvided);
+
+        this.name = 'ExpiredJWTError';
     }
 }
 
@@ -51,6 +76,10 @@ export default class ErrorHandler {
     static handle(error: any) {
         if (error instanceof MongoServerError) {
             return this.handleMongoServerError(error);
+        } else if(error instanceof JsonWebTokenError) {
+            return new InvalidJWTError();
+        } else if(error instanceof ExpiredJWTError) {
+            return new ExpiredJWTError();
         } else if (error instanceof HTTPError) {
             return error;
         } else {

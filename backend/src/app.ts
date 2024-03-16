@@ -15,6 +15,7 @@ import ServiceRegistry from './services/ServiceRegistry';
 
 // REST API Routes
 import authRoute from './routes/api/auth';
+import quizzesRoute from './routes/api/quizzes';
 import usersRoute from './routes/api/users';
 
 // Check if the required configs to boot up are set
@@ -66,6 +67,7 @@ app.set('services', ServiceRegistry.getInstance());
 
 // Routes
 app.use('/api/auth', authRoute);
+app.use('/api/quizzes', quizzesRoute);
 app.use('/api/users', usersRoute);
 
 // Error handling middleware
