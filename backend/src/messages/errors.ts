@@ -6,7 +6,8 @@ const ERRORS = {
     anUnexpectedErrorOccured: 'An unexpected error occured!',
     unauthorizedUser: 'Unauthorized user.',
     invalidJWTProvided: 'Invalid JWT provided.',
-    expiredJWTProvided: 'Expired JWT provided.'
+    expiredJWTProvided: 'Expired JWT provided.',
+    invalidQuizInput: 'Invalid quiz input.'
 };
 
 export default ERRORS;

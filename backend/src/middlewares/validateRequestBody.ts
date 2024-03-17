@@ -13,7 +13,9 @@ const requestBodyValidationMiddlewareFactoryFn = (
     const middleware: RequestHandler = (req, res, next) => {
         const validationErrors = validationMethod(req.body);
 
-        if (Object.keys(validationErrors).length > 0) {
+        if(!validationErrors) {
+            return next();
+        } else {
             return next(
                 new BadRequestError<TransformedError>(
                     customValidationErrorMessage ??
@@ -22,8 +24,6 @@ const requestBodyValidationMiddlewareFactoryFn = (
                 )
             );
         }
-
-        return next();
     };
 
     return middleware;
@@ -39,4 +39,10 @@ export const validateSignInRequestBodyMiddleware =
     requestBodyValidationMiddlewareFactoryFn(
         RequestBodyValidator.validateSignInRequestBody,
         ERRORS.invalidUserInputPleaseTryAgain
+    );
+
+export const validateCreateQuizRequestBodyMiddleware =
+    requestBodyValidationMiddlewareFactoryFn(
+        RequestBodyValidator.validateCreateQuizRequestBody,
+        ERRORS.invalidQuizInput
     );
