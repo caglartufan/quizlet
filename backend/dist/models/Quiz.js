@@ -7,6 +7,11 @@ exports.Quiz = void 0;
 const mongoose_1 = require("mongoose");
 const validation_1 = __importDefault(require("../messages/validation"));
 const quizSchema = new mongoose_1.Schema({
+    createdBy: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
     title: {
         type: String,
         required: [true, validation_1.default.quiz.title['any.required']],
@@ -20,16 +25,34 @@ const quizSchema = new mongoose_1.Schema({
         maxlength: [250, validation_1.default.quiz.description['string.max']],
     },
     askedInformation: {
-        firstname: true,
-        lastname: true,
-        age: false,
-        email: true,
-        address: false,
-        phone: false,
+        firstname: {
+            type: Boolean,
+            default: true
+        },
+        lastname: {
+            type: Boolean,
+            default: true
+        },
+        age: {
+            type: Boolean,
+            default: false
+        },
+        email: {
+            type: Boolean,
+            default: true
+        },
+        address: {
+            type: Boolean,
+            default: false
+        },
+        phone: {
+            type: Boolean,
+            default: false
+        },
     },
     questions: [
         {
-            type: mongoose_1.Types.ObjectId,
+            type: mongoose_1.Schema.Types.ObjectId,
             ref: 'Question',
             default: [],
         },

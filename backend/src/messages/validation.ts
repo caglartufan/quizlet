@@ -37,6 +37,26 @@ const VALIDATION = {
             'string.min': 'Description must contain at least 5 and at most 250 characters.',
             'string.max': 'Description must contain at least 5 and at most 250 characters.'
         },
+        askedInformation: {
+            firstname: {
+                'any.required': 'Data collection option for first name was not set.'
+            },
+            lastname: {
+                'any.required': 'Data collection option for last name was not set.'
+            },
+            age: {
+                'any.required': 'Data collection option for age was not set.'
+            },
+            email: {
+                'any.required': 'Data collection option for email was not set.'
+            },
+            address: {
+                'any.required': 'Data collection option for address was not set.'
+            },
+            phone: {
+                'any.required': 'Data collection option for phone was not set.'
+            }
+        },
         isPublished: {
             'validate.message': 'Quiz can not be published without any questions added.'
         }

@@ -79,12 +79,12 @@ export default class RequestBodyValidator {
                 .max(250)
                 .messages(VALIDATION.quiz.description),
             askedInformation: Joi.object({
-                firstname: Joi.boolean().required(),
-                lastname: Joi.boolean().required(),
-                age: Joi.boolean().required(),
-                email: Joi.boolean().required(),
-                address: Joi.boolean().required(),
-                phone: Joi.boolean().required(),
+                firstname: Joi.boolean().required().messages(VALIDATION.quiz.askedInformation.firstname),
+                lastname: Joi.boolean().required().messages(VALIDATION.quiz.askedInformation.lastname),
+                age: Joi.boolean().required().messages(VALIDATION.quiz.askedInformation.age),
+                email: Joi.boolean().required().messages(VALIDATION.quiz.askedInformation.email),
+                address: Joi.boolean().required().messages(VALIDATION.quiz.askedInformation.address),
+                phone: Joi.boolean().required().messages(VALIDATION.quiz.askedInformation.phone),
             }).required(),
         });
 

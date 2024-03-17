@@ -1,8 +1,10 @@
+import QuizService from './QuizService';
 import UserService from './UserService';
 
 export default class ServiceRegistry {
     private static instance: ServiceRegistry;
     userService: UserService;
+    quizService: QuizService;
 
     static getInstance() {
         if (!this.instance) {
@@ -14,5 +16,6 @@ export default class ServiceRegistry {
 
     private constructor() {
         this.userService = UserService.getInstance();
+        this.quizService = QuizService.getInstance();
     }
 }

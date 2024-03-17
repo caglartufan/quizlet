@@ -3,6 +3,9 @@ import { IQuestion } from './Question';
 import VALIDATION from '../messages/validation';
 
 export interface IQuiz {
+    // Basic data
+    createdBy: Types.ObjectId;
+
     // 1st Step
     title: string;
     description: string;
@@ -16,7 +19,7 @@ export interface IQuiz {
     };
 
     // 2nd Step
-    questions: Array<IQuestion>;
+    questions: Array<Types.ObjectId> | Array<IQuestion>;
 
     // 3rd Step
     isPublished: boolean;
@@ -27,6 +30,11 @@ interface IQuizMethods {}
 type QuizModel = Model<IQuiz, {}, IQuizMethods>;
 
 const quizSchema = new Schema<IQuiz, QuizModel, IQuizMethods>({
+    createdBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
     title: {
         type: String,
         required: [true, VALIDATION.quiz.title['any.required']],
@@ -40,16 +48,34 @@ const quizSchema = new Schema<IQuiz, QuizModel, IQuizMethods>({
         maxlength: [250, VALIDATION.quiz.description['string.max']],
     },
     askedInformation: {
-        firstname: true,
-        lastname: true,
-        age: false,
-        email: true,
-        address: false,
-        phone: false,
+        firstname: {
+            type: Boolean,
+            default: true
+        },
+        lastname: {
+            type: Boolean,
+            default: true
+        },
+        age: {
+            type: Boolean,
+            default: false
+        },
+        email: {
+            type: Boolean,
+            default: true
+        },
+        address: {
+            type: Boolean,
+            default: false
+        },
+        phone: {
+            type: Boolean,
+            default: false
+        },
     },
     questions: [
         {
-            type: Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: 'Question',
             default: [],
         },

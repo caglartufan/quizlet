@@ -1,11 +1,12 @@
 import { RequestHandler } from 'express';
+import { HydratedDocument } from 'mongoose';
 import jwt from 'jsonwebtoken';
 import config from 'config';
 import ErrorHandler, { UnauthorizedError } from '../utils/ErrorHandler';
 import UserDAO from '../DAO/UserDAO';
 import { IUser } from '../models/User';
 
-const auth: RequestHandler<{}, any, any, {}, { user: IUser }> = async (req, res, next) => {
+const auth: RequestHandler<{}, any, any, {}, { user: HydratedDocument<IUser> }> = async (req, res, next) => {
     const unauthorizedError = new UnauthorizedError();
     const authHeader = req.headers.authorization;
     let token: string | undefined;

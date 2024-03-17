@@ -20,7 +20,7 @@ interface IUserMethods {
     getActiveAuthTokenOrGenerateOne(): Promise<string>;
 }
 
-type UserModel = Model<IUser, {}, IUserMethods>;
+export type UserModel = Model<IUser, {}, IUserMethods>;
 
 const userSchema = new Schema<IUser, UserModel, IUserMethods>(
     {

@@ -69,12 +69,12 @@ class RequestBodyValidator {
                 .max(250)
                 .messages(validation_1.default.quiz.description),
             askedInformation: joi_1.default.object({
-                firstname: joi_1.default.boolean().required(),
-                lastname: joi_1.default.boolean().required(),
-                age: joi_1.default.boolean().required(),
-                email: joi_1.default.boolean().required(),
-                address: joi_1.default.boolean().required(),
-                phone: joi_1.default.boolean().required(),
+                firstname: joi_1.default.boolean().required().messages(validation_1.default.quiz.askedInformation.firstname),
+                lastname: joi_1.default.boolean().required().messages(validation_1.default.quiz.askedInformation.lastname),
+                age: joi_1.default.boolean().required().messages(validation_1.default.quiz.askedInformation.age),
+                email: joi_1.default.boolean().required().messages(validation_1.default.quiz.askedInformation.email),
+                address: joi_1.default.boolean().required().messages(validation_1.default.quiz.askedInformation.address),
+                phone: joi_1.default.boolean().required().messages(validation_1.default.quiz.askedInformation.phone),
             }).required(),
         });
         const { error } = schema.validate(body, {
